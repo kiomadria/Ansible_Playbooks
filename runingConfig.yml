@@ -1,0 +1,37 @@
+---
+- name: test network info
+  hosts: cic
+  connection: network_cli
+  gather_facts: no
+
+
+
+  tasks:
+#    - set_fact: mydate="{{lookup('pipe','date +%Y%m%d%H%M%S')}}"
+#    - debug: var=mydate
+    - shell: 'date +%Y%m%d'
+      register: current_run_timestamp
+
+    - name: grab IOS running configuration
+      ios_command:
+        commands:
+          - show run
+      register: config
+
+    - name: grab NXOS running configuration
+      nxos_command:
+        commands: show run
+      register: config
+#    - debug:
+#        msg: "{{config}}"
+
+    - name: create backup of configuration
+      copy:
+        content: "{{config.stdout[0]}}"
+        dest: "/home/sanfordg/ansible/runningConfig/{{current_run_timestamp.stdout}}_{{inventory_hostname}}_run_config.txt"
+
+#    - name: Grab running version
+#      ios_command:
+#        commands:
+#          - show version
+#      register: version
