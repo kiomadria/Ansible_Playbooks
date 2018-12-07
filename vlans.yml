@@ -1,0 +1,5 @@
+---
+vlans:
+  - vlan_id: 998
+    name: Ansible_Test_VLAN
+    state: present

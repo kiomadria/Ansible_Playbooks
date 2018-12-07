@@ -1,0 +1,24 @@
+---
+- name: Create VLAN on NXOS network info
+  hosts: '{{target}}'
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: include vars #comment out this task if you want to use the Group Varable
+      include_vars:
+        file: vlans.yml
+
+    - name: Configure VLAN ID and Name it
+      nxos_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      with_items: "{{ vlans }}"
+
+    - name: show VLAN
+      nxos_command:
+        commands: show vlan brief
+      register: show_vlan
+
+    - debug: var=show_vlan.stdout_lines

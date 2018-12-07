@@ -1,6 +1,6 @@
 ---
-- name: test network info
-  hosts: cic
+- name: Get Running Config
+  hosts: '{{target}}'
   connection: network_cli
   gather_facts: no
 
@@ -22,13 +22,19 @@
       nxos_command:
         commands: show run
       register: config
-#    - debug:
-#        msg: "{{config}}"
+
+    - name: Creates Running Config directory
+      file:
+        path: /opt/ansible/runningConfig/{{target}}/{{current_run_timestamp.stdout}}
+        state: directory
+        owner: sanfordg
+        group: sanfordg
+        mode: 0770
 
     - name: create backup of configuration
       copy:
         content: "{{config.stdout[0]}}"
-        dest: "/home/sanfordg/ansible/runningConfig/{{current_run_timestamp.stdout}}_{{inventory_hostname}}_run_config.txt"
+        dest: "/opt/ansible/runningConfig/{{target}}/{{current_run_timestamp.stdout}}/{{current_run_timestamp.stdout}}_{{inventory_hostname}}_run_config.txt"
 
 #    - name: Grab running version
 #      ios_command:

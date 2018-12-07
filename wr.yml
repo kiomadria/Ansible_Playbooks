@@ -1,0 +1,21 @@
+---
+- name: Copy run Start on {{target}}
+  hosts: '{{target}}'
+#  hosts: nxos
+  connection: network_cli
+  gather_facts: no
+
+
+
+  tasks:
+    - name: Copy run start on ios
+      ios_config:
+        save_when: always
+
+    - name: Copy run start on NXOS
+      nxos_config:
+        save_when: always
+
+#    - name: Copy run start on NXOS
+#      nxos_command:
+#        commands: copy running-config startup-config
