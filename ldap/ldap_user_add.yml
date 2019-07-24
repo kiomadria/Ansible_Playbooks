@@ -1,0 +1,57 @@
+---
+- hosts: ldap
+  remote_user: sanfordg
+  gather_facts: no
+  vars:
+    server: 10.201.202.200
+    basedn: dc=cic,dc=com
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter the username"
+      private: no
+    - name: "firstname"
+      prompt: "Enter users first name"
+      private: no
+    - name: "lastname"
+      prompt: "Enter users last name"
+      private: no
+    - name: "password"
+      prompt: "Enter users password"
+      private: yes
+#      encrypt: "sha256_crypt"
+#    - name: "uidnumber"
+#      prompt: "Enter users uid"
+#      private: no
+  tasks:
+   - name: create LDAP User
+     ldap_entry:
+       dn: uid={{ username }},ou=People,{{ basedn }}
+       server_uri: ldap://{{ server }}
+       bind_dn: cn=ldapadm,{{ basedn }}
+       bind_pw: ldppassword
+       state: present
+       objectClass:
+       - top
+       - inetOrgPerson
+       - posixAccount
+       - shadowAccount
+       attributes:
+         uid: "{{ username }}"
+         sn: "{{ lastname }}"
+         givenName: "{{ firstname }}"
+         cn: "{{ firstname }} {{ lastname }}"
+         displayName: "{{ firstname }} {{ lastname }}"
+         uidNumber: "{{uuidNumber.stdout}}"
+ #        uidNumber: "{{ uidnumber}}"
+
+         gidNumber: "4000"
+         gecos: "{{ firstname }} {{ lastname }}"
+         loginShell: "/bin/bash"
+         homeDirectory: "/home/{{ username }}"
+
+#   - name: set LDAP users Password
+#     ldap_passwd:
+#       dn: uid={{ username }},ou=People,dc=cic,dc=com
+#       passwd: "{{ password }}"
+#       bind_dn: cn=ldapadm,dc=cic,dc=com
+#       bind_pw: ldppassword

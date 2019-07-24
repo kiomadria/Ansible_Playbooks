@@ -1,0 +1,72 @@
+---
+# tasks file for apic
+- name: Add a new tenant
+  aci_tenant:
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    tenant: "{{ tenant_name }}"
+    description: Test tenant
+    state: present
+    validate_certs: false
+
+#- name: CREATE ACI TENANT VRF
+#  aci_vrf:
+#    vrf: "{{ vrf_name }}"
+#    tenant: "{{ tenant_name }}"
+#    hostname: "{{ inventory_hostname }}"
+#    username: "{{ user }}"
+#    password: "{{ pass }}"
+#    use_ssl: yes
+#    validate_certs: false
+
+- name: CREATE ACI TENANT BD
+  aci_bd:
+    tenant: "{{ tenant_name }}"
+    bd: "{{ item.1 }}"
+    #vrf: "{{ vrf_name }}"
+    host: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+    loop: "{{ bridge_domain | dict2items | subelements('value') }}"
+
+
+
+#- name: CREATE ACI TENANT BD SUBNET
+#  aci_bd_subnet:
+#    tenant: "{{ tenant_name }}"
+#    bd: "{{ bd_name }}"
+#    gateway: "{{ gateway_ip }}"
+#    mask: "{{ subnet_mask }}"
+#    host: "{{ inventory_hostname }}"
+#    username: "{{ user }}"
+#    password: "{{ pass }}"
+#    use_ssl: yes
+#    validate_certs: false
+
+- name: CREATE ACI TENANT APP PROFILE
+  aci_ap:
+    ap: "{{ app_profile_name }}"
+    tenant: "{{ tenant_name }}"
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+
+- name: CREATE ACI TENANT APP PROFILE EPG
+  aci_epg:
+    epg: "{{ item.value }}"
+    #epg: "{{ epg_name }}"
+    ap: "{{ app_profile_name }}"
+    tenant: "{{ tenant_name }}"
+    bd: "{{ bd_name }}"
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+  loop: "{{  epg_name | dict2items }}"
+  #loop: "{{ lookup('dict', epg_name) }}"

@@ -1,0 +1,17 @@
+---
+# vars file for apic
+tenant_name: aciproglab12
+app_profile_name: ansible_lab12-ap
+bridge_domain:
+  bd1:
+    bd_name: ansible_lab12-bd1
+    vrf_name: ansible_lab12-vrf
+    gateway_ip: 10.1.1.1
+    subnet_mask: 24
+    epg_name: ansible_lab12-epg1
+  bd2:
+    bd_name: ansible_lab12-bd2
+    vrf_name: ansible_lab12-vrf
+    gateway_ip: 10.1.2.1
+    subnet_mask: 24
+    epg_name: ansible_lab12-epg2

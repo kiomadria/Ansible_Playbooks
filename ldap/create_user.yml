@@ -1,0 +1,7 @@
+---
+#find the next available UUID
+- import_playbook: availUUID.yml
+#create the user
+- import_playbook: ldap_user_add.yml
+#assign user to groups
+- import_playbook: groupselection.yml

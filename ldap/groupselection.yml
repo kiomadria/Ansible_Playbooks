@@ -1,0 +1,52 @@
+---
+- hosts: ldap
+  remote_user: sanfordg
+  gather_facts: no
+
+  vars:
+    server: 10.201.202.200
+    basedn: dc=cic,dc=com
+  vars_prompt:
+    - name: "Network_Admin"
+      prompt: "Is user in the Network Group (yes/no)?"
+      private: no
+    - name: "vSphere_Admin"
+      prompt: "Is user a vSphere admin (yes/no)?"
+      private: no
+    - name: "sudoer"
+      prompt: "Is user a Server Admin (yes/no)?"
+      private: no
+
+  tasks:
+    - name: add user to vpshere_admin group
+      ldap_attr:
+        dn: "cn=network_admins,ou=group,{{ basedn }}"
+        server_uri: ldap://{{ server }}
+        bind_dn: cn=ldapadm,"{{ basedn }}"
+        bind_pw: ldppassword
+        state: present
+        name: uniqueMember
+        values: "uid={{ username }},ou=People,{{ basedn }}"
+      when: Network_Admin | bool
+
+    - name: add user to vpshere_admin group
+      ldap_attr:
+        dn: "cn=vsphere_admins,ou=group,{{ basedn }}"
+        server_uri: ldap://{{ server }}
+        bind_dn: cn=ldapadm,"{{ basedn }}"
+        bind_pw: ldppassword
+        state: present
+        name: uniqueMember
+        values: "uid={{ username }},ou=People,{{ basedn }}"
+      when: vSphere_Admin | bool
+
+    - name: add user to vpshere_admin group
+      ldap_attr:
+        dn: "cn=%wheel,ou=SUDOers,{{ basedn }}"
+        server_uri: ldap://{{ server }}
+        bind_dn: cn=ldapadm,"{{ basedn }}"
+        bind_pw: ldppassword
+        state: present
+        name: uniqueMember
+        values: "uid={{ username }},ou=People,{{ basedn }}"
+      when: sudoer | bool

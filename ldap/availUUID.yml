@@ -1,0 +1,18 @@
+---
+- hosts: ldap
+  remote_user: sanfordg
+  gather_facts: no
+  vars:
+    dn: "dc=cic,dc=com"
+    ldap_server: "10.201.202.20"
+  tasks:
+    - name: run script
+      command: /bin/sh /home/sanfordg/finduuid.sh
+      register: uuidNumber
+
+    - name: The next available UUID is
+      debug:
+        var: "{{uuidNumber.stdout}}"
+
+#- name: test Varable
+#  import_playbook: roles/common/tasks/varTest.yml

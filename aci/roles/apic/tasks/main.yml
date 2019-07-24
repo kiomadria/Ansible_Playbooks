@@ -1,0 +1,76 @@
+---
+# tasks file for apic
+- name: Add a new tenant
+  aci_tenant:
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    tenant: "{{ tenant_name }}"
+    description: Test tenant
+    state: present
+    validate_certs: false
+
+- name: CREATE ACI TENANT VRF
+  aci_vrf:
+    vrf: "{{ item.value.vrf_name }}"
+    tenant: "{{ tenant_name }}"
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+  loop: "{{  bridge_domain | dict2items }}"
+
+- name: CREATE ACI TENANT BD
+  aci_bd:
+    tenant: "{{ tenant_name }}"
+    bd: "{{ item.value.bd_name }}"
+    vrf: "{{ item.value.vrf_name }}"
+    host: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+  with_dict: "{{  bridge_domain }}"
+  #loop: "{{  bridge_domain | dict2items }}"
+
+- name: CREATE ACI TENANT BD SUBNET
+  aci_bd_subnet:
+    tenant: "{{ tenant_name }}"
+    bd: "{{ item.value.bd_name }}"
+    gateway: "{{ item.value.gateway_ip }}"
+    mask: "{{ item.value.subnet_mask }}"
+    host: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+  with_dict: "{{  bridge_domain }}"
+
+- name: CREATE ACI TENANT APP PROFILE
+  aci_ap:
+    ap: "{{ app_profile_name }}"
+    tenant: "{{ tenant_name }}"
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+
+- name: CREATE ACI TENANT APP PROFILE EPG
+  aci_epg:
+    #epg: "{{ item.value }}"
+    epg: "{{ item.value.epg_name }}"
+    ap: "{{ app_profile_name }}"
+    tenant: "{{ tenant_name }}"
+    bd: "{{ item.value.bd_name }}"
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user }}"
+    password: "{{ pass }}"
+    use_ssl: yes
+    validate_certs: false
+  with_dict: "{{  bridge_domain }}"
+  #with_together:
+  #  - "{{ epg_name }}"
+  #  - "{{ lookup('dict', bridge_domain) }}"
+  #loop: "{{ lookup('dict', epg_name) }}"

@@ -1,0 +1,5 @@
+---
+- name: Test
+  shell: cat "/etc/resolv.conf"
+
+- debug: msg="this ran"

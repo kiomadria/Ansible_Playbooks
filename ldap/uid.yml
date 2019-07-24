@@ -1,0 +1,10 @@
+---
+- hosts: 100vbecocd002.bc.ecox
+  tasks:
+  - name find uid
+    script: /etc/ansible/scripts/find_available_LDAP_number.sh
+    register: available_UID
+  - debug:
+      var: available_UID
+
+

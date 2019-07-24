@@ -1,0 +1,18 @@
+---
+- hosts: ldap
+  remote_user: sanfordg
+  gather_facts: no
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter the username"
+      private: no
+  tasks:
+   - name: add user to vpshere_admin group
+     ldap_attr:
+       dn: "cn=vsphere_admins,ou=group,dc=cic,dc=com"
+       server_uri: ldap://10.201.202.200
+       bind_dn: cn=ldapadm,dc=cic,dc=com
+       bind_pw: ldppassword
+       state: present
+       name: uniqueMember
+       values: "uid={{ username }},ou=People,dc=cic,dc=com"
