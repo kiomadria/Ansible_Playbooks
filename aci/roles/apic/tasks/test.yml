@@ -1,7 +1,0 @@
----
-# tasks file for apic
-- name: Loop over subelements of the dictionary
-  debug:
-    msg: "BD = {{ item.value.bd_name }} "
-    msg: "subnet = {{ item.value.gateway_ip }} "
-  loop: "{{  bridge_domain | dict2items }}"

@@ -13,16 +13,19 @@
     - name: "vSphere_Admin"
       prompt: "Is user a vSphere admin (yes/no)?"
       private: no
-    - name: "sudoer"
-      prompt: "Is user a Server Admin (yes/no)?"
-      private: no
+  #  - name: "sudoer"
+  #    prompt: "Is user a Server Admin (yes/no)?"
+  #    private: no
 
   tasks:
+    - name: test vars
+      debug:
+        msg: "the var username {{ username }} the basedn is: {{ basedn }}"
     - name: add user to vpshere_admin group
       ldap_attr:
-        dn: "cn=network_admins,ou=group,{{ basedn }}"
+        dn: "cn=network_admins,ou=Group,{{ basedn }}"
         server_uri: ldap://{{ server }}
-        bind_dn: cn=ldapadm,"{{ basedn }}"
+        bind_dn: cn=ldapadm,{{ basedn }}
         bind_pw: ldppassword
         state: present
         name: uniqueMember
@@ -31,9 +34,9 @@
 
     - name: add user to vpshere_admin group
       ldap_attr:
-        dn: "cn=vsphere_admins,ou=group,{{ basedn }}"
+        dn: "cn=vsphere_admins,ou=Group,{{ basedn }}"
         server_uri: ldap://{{ server }}
-        bind_dn: cn=ldapadm,"{{ basedn }}"
+        bind_dn: cn=ldapadm,{{ basedn }}
         bind_pw: ldppassword
         state: present
         name: uniqueMember
@@ -44,7 +47,7 @@
       ldap_attr:
         dn: "cn=%wheel,ou=SUDOers,{{ basedn }}"
         server_uri: ldap://{{ server }}
-        bind_dn: cn=ldapadm,"{{ basedn }}"
+        bind_dn: cn=ldapadm,{{ basedn }}
         bind_pw: ldppassword
         state: present
         name: uniqueMember

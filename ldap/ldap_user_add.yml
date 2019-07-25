@@ -23,6 +23,9 @@
 #      prompt: "Enter users uid"
 #      private: no
   tasks:
+   - set_fact:
+       username: "{{ username }} "
+
    - name: create LDAP User
      ldap_entry:
        dn: uid={{ username }},ou=People,{{ basedn }}
@@ -39,15 +42,15 @@
          uid: "{{ username }}"
          sn: "{{ lastname }}"
          givenName: "{{ firstname }}"
-         cn: "{{ firstname }} {{ lastname }}"
+         cn: "{{ firstname }}{{ lastname }}"
          displayName: "{{ firstname }} {{ lastname }}"
          uidNumber: "{{uuidNumber.stdout}}"
  #        uidNumber: "{{ uidnumber}}"
-
          gidNumber: "4000"
          gecos: "{{ firstname }} {{ lastname }}"
          loginShell: "/bin/bash"
          homeDirectory: "/home/{{ username }}"
+
 
 #   - name: set LDAP users Password
 #     ldap_passwd:
