@@ -1,6 +1,7 @@
 ---
 - name: Create VLAN on NXOS network info
-  hosts: '{{target}}'
+  #hosts: '{{target}}'
+  hosts: test
   connection: network_cli
   gather_facts: no
 
@@ -15,10 +16,34 @@
         name: "{{ item.name }}"
         state: "{{ item.state }}"
       with_items: "{{ vlans }}"
+      when: ansible_network_os == 'nxos'
 
-    - name: show VLAN
+    - name: Configure VLAN ID on IOS
+      ios_vlan:
+        vlan_id: "{{ item.vlan_id }}"
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      with_items: "{{ vlans }}"
+      when: ansible_network_os == 'ios'
+
+    - name: show VLAN from NXOS
       nxos_command:
         commands: show vlan brief
       register: show_vlan
+      when: ansible_network_os == 'nxos'
 
-    - debug: var=show_vlan.stdout_lines
+    - debug:
+        msg: '{{ show_vlan }}'
+      when: ansible_network_os == 'nxos'
+
+    - name: show VLAN from IOS
+      ios_command:
+        commands: show vlan brief
+      register: show_vlan
+      when: ansible_network_os == 'ios'
+
+    - debug:
+        msg: '{{ show_vlan }}'
+      when: ansible_network_os == 'ios'
+
+      #var=show_vlan.stdout_lines
