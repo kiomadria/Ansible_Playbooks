@@ -1,43 +1,52 @@
 ---
 - name: Get Running Config
-  hosts: '{{target}}'
+  #hosts: '{{target}}'
+  hosts: cic
   connection: network_cli
   gather_facts: no
 
 
 
   tasks:
-#    - set_fact: mydate="{{lookup('pipe','date +%Y%m%d%H%M%S')}}"
-#    - debug: var=mydate
-    - shell: 'date +%Y%m%d'
-      register: current_run_timestamp
 
     - name: grab IOS running configuration
-      ios_command:
-        commands:
-          - show run
-      register: config
+      block:
+      - ios_facts:
+          gather_subset: all
+
+      - name: Creates Running Config directory
+        file:
+          path: /opt/ansible/runningConfig/{{ ansible_net_hostname }}
+          state: directory
+          owner: sanfordg
+          group: sanfordg
+          mode: 0777
+
+      - name: Backup IOS Running Configs
+        ios_config:
+          backup: yes
+          backup_options:
+            dir_path:  /opt/ansible/runningConfig/{{ ansible_net_hostname }}
+
+      when: ansible_network_os == 'ios'
 
     - name: grab NXOS running configuration
-      nxos_command:
-        commands: show run
-      register: config
+      block:
+      - nxos_facts:
+          gather_subset: all
 
-    - name: Creates Running Config directory
-      file:
-        path: /opt/ansible/runningConfig/{{target}}/{{current_run_timestamp.stdout}}
-        state: directory
-        owner: sanfordg
-        group: sanfordg
-        mode: 0770
+      - name: Creates Running Config directory
+        file:
+          path: /opt/ansible/runningConfig/{{ ansible_net_hostname }}
+          state: directory
+          owner: sanfordg
+          group: sanfordg
+          mode: 0777
 
-    - name: create backup of configuration
-      copy:
-        content: "{{config.stdout[0]}}"
-        dest: "/opt/ansible/runningConfig/{{target}}/{{current_run_timestamp.stdout}}/{{current_run_timestamp.stdout}}_{{inventory_hostname}}_run_config.txt"
+      - name: Backup IOS Running Configs
+        nxos_config:
+          backup: yes
+          backup_options:
+            dir_path:  /opt/ansible/runningConfig/{{ ansible_net_hostname }}
 
-#    - name: Grab running version
-#      ios_command:
-#        commands:
-#          - show version
-#      register: version
+      when: ansible_network_os == 'nxos'
