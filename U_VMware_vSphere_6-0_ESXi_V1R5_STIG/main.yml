@@ -1,0 +1,22 @@
+- name: U_VMware_vSphere_6-0_ESXi_V1R5_STIG
+  hosts: esx
+  gather_facts: true
+  vars:
+    cluster_name: "C220-M4-SERVERS"
+    vcenter_name: "10.10.10.20"
+    vcenter_username: "administrator@vsphere.local"
+    syslog: "10.10.10.100"
+    logdir: "/scratch"
+  tasks:
+    - name: Get Service
+      community.vmware.vmware_host_service_info:
+        cluster_name: "{{ cluster_name }}"
+        hostname: "{{ inventory_hostname }}"
+        password: "{{ ansible_password }}"
+        username: "{{ ansible_user }}"
+        validate_certs: no
+      delegate_to: localhost
+      register: host_service_info
+      tags: debug
+      #  roles:
+#    - verification
