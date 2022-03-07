@@ -7,16 +7,5 @@
     vcenter_username: "administrator@vsphere.local"
     syslog: "10.10.10.100"
     logdir: "/scratch"
-  tasks:
-    - name: Get Service
-      community.vmware.vmware_host_service_info:
-        cluster_name: "{{ cluster_name }}"
-        hostname: "{{ inventory_hostname }}"
-        password: "{{ ansible_password }}"
-        username: "{{ ansible_user }}"
-        validate_certs: no
-      delegate_to: localhost
-      register: host_service_info
-      tags: debug
-      #  roles:
-#    - verification
+  roles:
+  - verification
