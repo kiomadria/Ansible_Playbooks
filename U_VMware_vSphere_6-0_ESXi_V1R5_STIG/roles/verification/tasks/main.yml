@@ -1,9 +1,11 @@
-- name: Add a new tenant
+---
+- name:
   community.vmware.vmware_host_config_info:
-  #  esxi_hostname: "{{ inventory_hostname }}"
-  #  hostname: "{{ inventory_hostname }}"
-  #  password: "{{ ansible_password }}"
-  #  username: "{{ ansible_user }}"
-  #  validate_certs: no
-  #  degbug:
-  #delegate_to: localhost
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    register: host_config_info
+  delegate_to: localhost
+- debug: var= host_config_info
