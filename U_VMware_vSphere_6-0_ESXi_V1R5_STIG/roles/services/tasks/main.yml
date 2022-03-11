@@ -1,0 +1,67 @@
+---
+#services Role
+- name: V-63241 Shell Service
+  community.vmware.vmware_host_service_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ vcenter_name }}"
+    password: "{{ ansible_password }}"
+    username: "{{ vcenter_username }}"
+    validate_certs: no
+    service_name: TSM
+    state: absent
+    service_policy: off
+    state: absent
+  delegate_to: localhost
+  tags:
+    - service
+    - shell
+- name:  V-63261, V63779 NTP Servers and NTP Serivce ON
+  community.vmware.vmware_host_ntp:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    state: present
+    service_policy: on
+    ntp_servers: "{{ item }}"
+  loop: "{{ ntp_server }}"
+  delegate_to: localhost
+  tags:
+    - service
+    - ntp
+- name:  V-63275 Disable SNMP if not being used
+  community.vmware.vmware_host_service_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ vcenter_name }}"
+    password: "{{ ansible_password }}"
+    username: "{{ vcenter_username }}"
+    validate_certs: no
+    service_name: snmpd
+    state: absent
+    service_policy: off
+    state: absent
+  delegate_to: localhost
+  when: "{{ snmp_in_use }}" == False
+  tags:
+    - snmp
+    - service
+- name: V-63197,V-63215,V-63501,V-63189,V-63203,V-63187,V-63223,V-63221,V-63225,V-63219,V-63217,V-63213,V-63211,V-63209,V-63207,V-63199,V-63191,V-63205,V-63201,V-63195,V-63193 Copy sshd_config
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+  tag: ssh
+- name: V-63239, V63885 Stop SSH Service
+  community.vmware.vmware_host_service_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ vcenter_name }}"
+    password: "{{ ansible_password }}"
+    username: "{{ vcenter_username }}"
+    validate_certs: no
+    service_name: TSM-SSH
+    service_policy: off
+    state: absent
+  delegate_to: localhost
+  tags:
+    - ssh
+    - service

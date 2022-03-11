@@ -1,0 +1,13 @@
+---
+#lockdown Role
+- name: V-63147,V-63465 Enable Lockdown Mode
+  community.vmware.vmware_host_lockdown:
+    cluster_name: "{{ cluster_name }}"
+    hostname: "{{ vcenter_name }}"
+    password: "{{ ansible_password }}"
+    username: "{{ vcenter_username }}"
+    validate_certs: no
+#    esxi_hostname:
+#      - 'sfed-esx-06.sfed.lab.local'
+    state: present
+  delegate_to: localhost

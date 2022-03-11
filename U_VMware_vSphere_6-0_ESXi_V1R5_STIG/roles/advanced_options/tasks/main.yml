@@ -1,0 +1,184 @@
+---
+#advanced options
+- name: V-63173 Lockdown Access
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "DCUI.Access": "root"
+  delegate_to: localhost
+  tags: options
+- name: V-63177, V-63477, V-63833, V-63903, V-63915, V-63921 Syslog
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Syslog.global.logHost": '{{ syslog }}'
+  delegate_to: localhost
+  tags: options
+- name:  V-63179 Account Failure Lockout
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Security.AccountLockFailures": 3
+  delegate_to: localhost
+  tags: options
+- name:  V-63181 Account Lockout time
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Security.AccountUnlockTime": 900
+  delegate_to: localhost
+  tags: options
+- name:  V-63183, V-63485 Warning Banner
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Annotations.WelcomeMessage": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.
+-At any time, the USG may inspect and seize data stored on this IS.
+-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.
+-This IS includes security measures (e.g., authentication and access controls) to protect USG interests- -not for your personal benefit or privacy.
+-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details."
+  delegate_to: localhost
+  tags: banner, options
+- name:  V-63185 confg.etc.issue
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Config.Etc.issue": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions: -The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations. -At any time, the USG may inspect and seize data stored on this IS. -Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose. -This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy. -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details."
+  delegate_to: localhost
+  tags: banner, options
+- name:  V-63229, V-63509 Log Level
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Config.HostAgent.log.level": "info"
+  delegate_to: localhost
+  tags:  options
+- name:  V-63231, V-63531, V63867, V-63905, V-63919, V-63923 Password Quality Control
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Security.PasswordQualityControl": "similar=deny retry=3 min=disabled,disabled,disabled,disabled,15"
+  delegate_to: localhost
+  tags:  options
+- name:  V-63237 Config Host Agent Solo enable Mob
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Config.HostAgent.plugins.solo.enableMob": false
+  delegate_to: localhost
+  tags: options
+- name:  V-63251, V-63773 Shell Timeout
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "UserVars.ESXiShellInteractiveTimeOut": 600
+  delegate_to: localhost
+  tags:  options
+- name:  V-63253,V-63775 Shell Timeout
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "UserVars.ESXiShellTimeOut": 600
+  delegate_to: localhost
+  tags:  options
+- name:  V-63253, V-63777 DCUI Timeout
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "UserVars.DcuiTimeOut": 600
+  delegate_to: localhost
+  tags:  options
+- name:  V-63259 Persitant Log Directory
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Syslog.global.logDir": '{{ logdir }}'
+  delegate_to: localhost
+  tags:  options
+- name: V-63279 Memory Force Salting
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Mem.ShareForceSalting": 2
+  delegate_to: localhost
+  tags: options
+- name: V-63285 BPDU Filter
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Net.BlockGuestBPDU": 1
+  delegate_to: localhost
+  tags: options
+- name: V-63293 dvFilter API Disable
+  community.vmware.vmware_host_config_manager:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+    options:
+      "Net.DVFilterBindIpAddress": ""
+  delegate_to: localhost
+  tags: options
