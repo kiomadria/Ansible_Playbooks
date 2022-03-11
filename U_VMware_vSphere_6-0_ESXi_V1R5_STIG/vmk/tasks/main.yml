@@ -1,0 +1,31 @@
+---
+- name: V-63265
+        #community.vmware.vmware_vmkernel_facts:
+  community.vmware.vmware_vmkernel_info:
+    esxi_hostname: "{{ inventory_hostname }}"
+    hostname: "{{ inventory_hostname }}"
+    password: "{{ ansible_password }}"
+    username: "{{ ansible_user }}"
+    validate_certs: no
+  register: config_info
+  delegate_to: localhost
+- local_action:
+    module: lineinfile
+    path: files/{{ inventory_hostname }}.STIG_output.txt
+    create: yes
+    line: "Vul ID: V-63265 ensure that not more than 1 vmk is set to True"
+- local_action:
+    module: lineinfile
+    path: files/{{ inventory_hostname }}.STIG_output.txt
+    create: yes
+    line: "    {{ item.device }}: enable_vmotion={{ item.enable_vmotion }}" #"{{ config_info.host_vmk_info[ansible_hostname + '.' + ansible_domain] }}" 
+  loop: "{{ config_info.host_vmk_info[ansible_hostname + '.' + ansible_domain] }}" 
+
+- local_action:
+    module: lineinfile
+    path: files/{{ inventory_hostname }}.testing.txt
+    create: yes
+    line: "{{ item }}" 
+  loop: "{{ config_info.host_vmk_info[ansible_hostname + '.' + ansible_domain] }}" 
+
+
